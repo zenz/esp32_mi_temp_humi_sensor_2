@@ -10,6 +10,7 @@ static bool doConnect = false;
 static bool connected = false;
 static bool datad = false;
 unsigned long idleTime = 5 * 60 * 1000L;
+int ledPin = 22;
 
 static void chrCB(BLERemoteCharacteristic *remoteChr, uint8_t *pData, size_t length, bool isNotify)
 {
@@ -18,6 +19,7 @@ static void chrCB(BLERemoteCharacteristic *remoteChr, uint8_t *pData, size_t len
     float voltage = (pData[3] | (pData[4] << 8)) * 0.001;
     Serial.printf("Temperature: %.1f C ; Humidity: %.1f %% ; Voltage: %.3f V\n", temp, humi, voltage);
     datad = true;
+    digitalWrite(ledPin, HIGH);
 }
 
 class deviceCB : public BLEAdvertisedDeviceCallbacks
@@ -53,6 +55,7 @@ class ClientCB : public BLEClientCallbacks
 
 bool connectToMiTemp()
 {
+    digitalWrite(ledPin, LOW);
     datad = false;
     Serial.println("Stablishing communications with temp sensor:");
     pClient->setClientCallbacks(new ClientCB());
@@ -101,6 +104,7 @@ void setup()
     pBLEScan->setWindow(0x30);
     pBLEScan->setActiveScan(true);
     pBLEScan->start(10, false);
+    pinMode(ledPin, OUTPUT);
 }
 
 void loop()
@@ -108,12 +112,12 @@ void loop()
     static unsigned long counter = 0;
     if (doConnect && !connected)
     {
+        counter += 1;
+        Serial.printf("This is the %lu approachs for reading...\n", counter);
         connected = connectToMiTemp();
     }
     if (datad)
     {
-        counter += 1;
-        Serial.printf("This is the %lu approachs for reading...\n", counter);
         disconnectToMiTemp();
     }
 }
