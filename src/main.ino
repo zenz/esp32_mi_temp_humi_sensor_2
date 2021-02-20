@@ -57,7 +57,7 @@ bool connectToMiTemp()
 {
     digitalWrite(ledPin, LOW);
     datad = false;
-    Serial.println("Stablishing communications with temp sensor:");
+    Serial.println("Establishing communications with temp sensor:");
     pClient->setClientCallbacks(new ClientCB());
     pClient->connect(mi_temp);
     Serial.println("    Connected to temp sensor");
@@ -113,7 +113,7 @@ void loop()
     if (doConnect && !connected)
     {
         counter += 1;
-        Serial.printf("This is the %lu approachs for reading...\n", counter);
+        Serial.printf("\n\nThis is the %lu approachs for reading...\n", counter);
         connected = connectToMiTemp();
     }
     if (datad)
