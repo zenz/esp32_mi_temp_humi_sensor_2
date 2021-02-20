@@ -36,6 +36,8 @@ class deviceCB : public BLEAdvertisedDeviceCallbacks
             BLEDevice::getScan()->stop();
             Serial.println("Stopping scan and connecting to temp sensor");
             mi_temp = new BLEAdvertisedDevice(advertisedDevice);
+            BLEAddress address = mi_temp->getAddress();
+            Serial.printf("Device address: %s", address.toString().c_str());
             doConnect = true;
         }
     }
