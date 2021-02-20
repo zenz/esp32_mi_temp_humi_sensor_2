@@ -9,14 +9,14 @@ BLEClient *pClient = BLEDevice::createClient();
 static bool doConnect = false;
 static bool connected = false;
 static bool datad = false;
-unsigned long idleTime = 120000L;
+unsigned long idleTime = 300000L;
 
 static void chrCB(BLERemoteCharacteristic *remoteChr, uint8_t *pData, size_t length, bool isNotify)
 {
     float temp = (pData[0] | (pData[1] << 8)) * 0.01;
     float humi = pData[2];
     float voltage = (pData[3] | (pData[4] << 8)) * 0.001;
-    Serial.printf("Temperature: %.1f C ; Humidity: %.1f %% ; Voltage: %.3f V\n", temp, humi, voltage);
+    Serial.printf("Temperature: %.2f C ; Humidity: %.1f %% ; Voltage: %.3f V\n", temp, humi, voltage);
     datad = true;
 }
 
@@ -85,9 +85,9 @@ void disconnectToMiTemp()
     Serial.println("    Removing callback for notify / indicate");
     pClient->disconnect();
     unsigned int seconds = idleTime / 1000;
-    delay(idleTime);
-    connected = false;
     Serial.printf("Disconnected. wait %d seconds for next connection...\n", seconds);
+    connected = false;
+    delay(idleTime);
 }
 
 void setup()
